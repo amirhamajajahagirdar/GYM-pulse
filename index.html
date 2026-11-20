@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GymPulse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="index.js" defer></script>
+</head>
+<body>
+<div id="app">
+
+  <!-- ═══════════════════════════════════════════
+       TOP BAR
+  ═══════════════════════════════════════════ -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo-mark"></div>
+      <div class="brand">
+        <span class="brand-name" id="hdr-gym-name">GymPulse</span>
+        <span class="brand-sub" id="hdr-branch">My Gym</span>
+      </div>
+      <div class="live-chip">
+        <span class="pulse-dot"></span>LIVE
+      </div>
+    </div>
+
+    <nav class="topnav">
+      <button class="tab active" data-view="dashboard">
+        <svg viewBox="0 0 20 20"><path d="M2 2h7v9H2V2zm9 0h7v5h-7V2zm0 7h7v9h-7V9zM2 13h7v5H2v-5z"/></svg>
+        Dashboard
+      </button>
+      <button class="tab" data-view="gate">
+        <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" stroke-width="1.5" fill="none"/><path d="M10 6v4l3 2"/></svg>
+        Gate
+        <span class="tab-badge" id="tab-live-count">0</span>
+      </button>
+      <button class="tab" data-view="athletes">
+        <svg viewBox="0 0 20 20"><path d="M13 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM18 16c0-3.31-3.58-6-8-6S2 12.69 2 16"/></svg>
+        Athletes
+      </button>
+      <button class="tab" data-view="pass">
+        <svg viewBox="0 0 20 20"><rect x="4" y="2" width="12" height="16" rx="2" stroke-width="1.5" fill="none"/><path d="M7 9h6M7 12h4"/></svg>
+        Member Pass
+      </button>
+      <button class="tab" data-view="settings">
+        <svg viewBox="0 0 20 20"><path d="M10 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M10 1a9 9 0 0 1 0 18A9 9 0 0 1 10 1z" fill="none" stroke-width="1.5"/></svg>
+        Settings
+      </button>
+    </nav>
+
+    <div class="topbar-right">
+      <div class="cap-pill"><span id="hdr-live">0</span>/<span id="hdr-cap">60</span> athletes</div>
+      <button class="btn-enroll" id="btn-enroll-open">
+        <svg viewBox="0 0 16 16" width="14" height="14"><line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/></svg>
+        Enroll Athlete
+      </button>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════
+       VIEWS
+  ═══════════════════════════════════════════ -->
+  <main class="views">
+
+    <!-- ─── DASHBOARD ─── -->
+    <section class="view active" id="view-dashboard">
+      <div class="page">
+
+        <div class="page-head">
+          <div>
+            <div class="page-label">Overview</div>
+            <h1 class="page-title" id="dash-title">Facility Presence Overview</h1>
+          </div>
+          <button class="btn-sec" id="btn-dash-goto-gate">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h8M9 4l4 4-4 4"/></svg>
+            Go to Gate
+          </button>
+        </div>
+
+        <!-- Stat cards -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <span class="stat-label">On Floor Now</span>
+            <div class="stat-val-row">
+              <span class="stat-num" id="d-active">0</span>
+              <span class="stat-badge green" id="d-load-badge">Empty</span>
+            </div>
+            <div class="stat-bar"><div class="stat-bar-fill" id="d-bar" style="width:0%"></div></div>
+            <span class="stat-hint" id="d-cap-hint">0% of 60 capacity</span>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-label">Visits Today</span>
+            <div class="stat-val-row">
+              <span class="stat-num" id="d-visits">0</span>
+            </div>
+            <span class="stat-hint" style="margin-top:auto">All check-ins logged today</span>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-label">Avg Session Length</span>
+            <div class="stat-val-row">
+              <span class="stat-num" id="d-dwell">—</span>
+            </div>
+            <span class="stat-hint" style="margin-top:auto">From completed sessions today</span>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-label">Total Members</span>
+            <div class="stat-val-row">
+              <span class="stat-num" id="d-total">0</span>
+            </div>
+            <span class="stat-hint" style="margin-top:auto">Registered athletes in database</span>
+          </div>
+        </div>
+
+        <!-- Bottom panels -->
+        <div class="dash-grid">
+          <div class="card">
+            <div class="card-head">
+              <h3>Hourly Arrivals Today</h3>
+            </div>
+            <div class="chart-area" id="d-chart">
+              <div class="empty-chart-hint" id="d-chart-hint">No arrivals logged yet today</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <h3>Recent Gate Activity</h3>
+            </div>
+            <div class="activity-list" id="d-activity">
+              <div class="empty-hint">No activity recorded yet</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── GATE / FLOOR PRESENCE ─── -->
+    <section class="view" id="view-gate">
+      <div class="page">
+
+        <div class="page-head">
+          <div>
+            <div class="page-label">Gate Operations</div>
+            <h1 class="page-title">Floor Presence & Check-In</h1>
+          </div>
+        </div>
+
+        <!-- Check-in bar -->
+        <div class="card checkin-card">
+          <h3 class="card-inner-title">Check In Athlete</h3>
+          <form id="form-checkin" class="checkin-form">
+            <div class="form-field grow2">
+              <label>Select Athlete</label>
+              <select id="ci-athlete" required>
+                <option value="">Choose athlete…</option>
+              </select>
+            </div>
+            <div class="form-field grow1">
+              <label>Gate / Access Point</label>
+              <select id="ci-gate">
+                <option value="Front Turnstile (QR)">Front Turnstile (QR)</option>
+                <option value="Reception Desk">Reception Desk</option>
+                <option value="Side Studio Gate">Side Studio Gate</option>
+              </select>
+            </div>
+            <div class="form-field-btn">
+              <button type="submit" class="btn-primary">Check In</button>
+            </div>
+          </form>
+          <div id="ci-msg" class="ci-msg"></div>
+        </div>
+
+        <!-- Active sessions -->
+        <div class="card">
+          <div class="card-head">
+            <h3>Athletes On Floor</h3>
+            <span class="count-chip" id="gate-count-chip">0 active</span>
+            <button class="btn-ghost ml-auto" id="btn-gate-refresh">↻ Refresh</button>
+          </div>
+          <div class="table-wrap">
+            <table class="tbl" id="gate-table">
+              <thead>
+                <tr>
+                  <th>Entry</th>
+                  <th>Athlete</th>
+                  <th>Plan</th>
+                  <th>Coach</th>
+                  <th>Elapsed</th>
+                  <th>Gate</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="gate-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── ATHLETES DIRECTORY ─── -->
+    <section class="view" id="view-athletes">
+      <div class="page dir-layout">
+
+        <!-- Main column -->
+        <div class="dir-main">
+          <div class="page-head">
+            <div>
+              <div class="page-label">Directory</div>
+              <h1 class="page-title">Athletes</h1>
+              <div class="page-sub" id="dir-meta">0 registered athletes</div>
+            </div>
+            <button class="btn-primary" id="btn-enroll-dir">+ Enroll</button>
+          </div>
+
+          <!-- Toolbar -->
+          <div class="card toolbar-card">
+            <div class="search-wrap">
+              <svg class="search-ico" viewBox="0 0 20 20"><circle cx="9" cy="9" r="6" stroke-width="2" fill="none"/><path d="M14.5 14.5L19 19" stroke-width="2"/></svg>
+              <input type="text" id="dir-search" class="search-inp" placeholder="Search name, ID, phone, coach, plan…">
+            </div>
+            <div class="segmented" id="dir-filter-group">
+              <button class="seg-btn active" data-filter="all">All</button>
+              <button class="seg-btn" data-filter="active">On Floor</button>
+              <button class="seg-btn" data-filter="registered">Registered</button>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="card table-card">
+            <div class="table-wrap">
+              <table class="tbl">
+                <thead>
+                  <tr>
+                    <th>Athlete</th>
+                    <th>Plan</th>
+                    <th>Coach</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="dir-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dossier drawer -->
+        <aside class="dossier" id="dossier-panel">
+          <div class="dossier-top">
+            <span class="page-label">Athlete Dossier</span>
+            <button class="btn-ghost" id="btn-dossier-close">✕</button>
+          </div>
+          <div class="dossier-scroll" id="dossier-scroll"></div>
+        </aside>
+
+      </div>
+    </section>
+
+    <!-- ─── MEMBER PASS ─── -->
+    <section class="view" id="view-pass">
+      <div class="page pass-page">
+        <div class="page-head centered">
+          <div class="page-label">Digital Pass</div>
+          <h1 class="page-title">Member Mobile Pass</h1>
+        </div>
+
+        <div class="pass-switcher">
+          <label>Viewing pass for:</label>
+          <select id="pass-select"></select>
+        </div>
+
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-body">
+
+              <div class="p-header">
+                <div class="p-brand">
+                  <span class="p-brand-dot"></span>
+                  <span id="p-gym-name">GYMPULSE</span>
+                </div>
+                <div class="p-avatar" id="p-avatar">—</div>
+              </div>
+
+              <div class="p-card">
+                <div class="p-card-top">
+                  <span class="p-plan" id="p-plan">MEMBER</span>
+                  <span class="p-active-pill">● ACTIVE</span>
+                </div>
+                <div class="p-name" id="p-name">Select an athlete</div>
+                <div class="p-id" id="p-id">ID: —</div>
+
+                <div class="p-qr-box">
+                  <svg id="p-qr" viewBox="0 0 120 120"></svg>
+                </div>
+
+                <div class="p-timer" id="p-timer">REFRESHES IN 30s</div>
+
+                <div class="p-footer">
+                  <div>
+                    <div class="p-foot-lbl">COACH</div>
+                    <div class="p-foot-val" id="p-coach">—</div>
+                  </div>
+                  <div>
+                    <div class="p-foot-lbl">VALID UNTIL</div>
+                    <div class="p-foot-val" id="p-valid">—</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-visits">
+                <div class="p-sec-label">Recent Visits</div>
+                <div id="p-visits-list"><div class="empty-hint">No visits yet</div></div>
+              </div>
+
+              <div class="p-actions">
+                <button class="p-btn" id="btn-refresh-pass">↻ Refresh Token</button>
+                <button class="p-btn" id="btn-wallet">⬒ Add to Wallet</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SETTINGS ─── -->
+    <section class="view" id="view-settings">
+      <div class="page narrow-page">
+
+        <div class="page-head">
+          <div>
+            <div class="page-label">Configuration</div>
+            <h1 class="page-title">Facility Settings</h1>
+          </div>
+        </div>
+
+        <div class="card settings-card">
+          <h3 class="card-inner-title">Gym Information</h3>
+          <form id="form-settings">
+            <div class="settings-fields">
+              <div class="form-field">
+                <label>Gym / Brand Name</label>
+                <input type="text" id="s-name" required>
+              </div>
+              <div class="form-field">
+                <label>Branch / Location</label>
+                <input type="text" id="s-branch" required>
+              </div>
+              <div class="form-field">
+                <label>Max Floor Capacity</label>
+                <input type="number" id="s-cap" min="5" max="1000" required>
+              </div>
+            </div>
+            <button type="submit" class="btn-primary">Save Settings</button>
+          </form>
+        </div>
+
+        <div class="card settings-card" style="margin-top:20px">
+          <h3 class="card-inner-title">Data Management</h3>
+
+          <div class="data-row">
+            <div>
+              <div class="data-row-title">Clear All Data</div>
+              <div class="data-row-sub">Remove all athletes, sessions and history. Cannot be undone.</div>
+            </div>
+            <button class="btn-danger" id="btn-clear-all">Clear All</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<!-- ═══════════════════════════════════════════
+     ENROLL MODAL
+═══════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-enroll">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title">Enroll New Athlete</span>
+      <button class="btn-ghost" id="btn-enroll-close">✕</button>
+    </div>
+    <form id="form-enroll">
+      <div class="modal-body">
+        <div class="form-field full">
+          <label>Full Name *</label>
+          <input type="text" id="e-name" placeholder="e.g. Astrid Lindgren" required autocomplete="off">
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Membership Plan *</label>
+            <select id="e-plan">
+              <option>Annual Unlimited</option>
+              <option>Performance Lab</option>
+              <option>Monthly Foundation</option>
+              <option>Movement & Mobility</option>
+              <option>Day Pass</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Assigned Coach</label>
+            <input type="text" id="e-coach" placeholder="Coach name">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Phone Number</label>
+            <input type="tel" id="e-phone" placeholder="+1 000 000 0000">
+          </div>
+          <div class="form-field">
+            <label>Email Address</label>
+            <input type="email" id="e-email" placeholder="athlete@example.com">
+          </div>
+        </div>
+        <div class="form-field full">
+          <label>Training Focus / Goals</label>
+          <input type="text" id="e-focus" placeholder="e.g. Strength training, weight loss, cardio">
+        </div>
+        <div class="form-field full">
+          <label>Medical Clearance</label>
+          <input type="text" id="e-medical" placeholder="e.g. Fully cleared, knee injury protocol" value="Standard Physical Clearance">
+        </div>
+        <div class="form-field full">
+          <label>Emergency Contact</label>
+          <input type="text" id="e-emergency" placeholder="Name + phone number">
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn-sec" id="btn-enroll-cancel">Cancel</button>
+        <button type="submit" class="btn-primary" id="btn-enroll-submit">Complete Enrollment</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toasts"></div>
+</body>
+</html>
